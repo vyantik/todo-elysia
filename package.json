@@ -3,9 +3,10 @@
 	"version": "1.0.50",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "bun run --watch src/index.ts"
+		"dev": "bun run --watch src/main.ts"
 	},
 	"dependencies": {
+		"@elysiajs/openapi": "^1.4.11",
 		"@prisma/client": "^6.16.2",
 		"elysia": "latest"
 	},
@@ -14,5 +15,5 @@
 		"bun-types": "latest",
 		"prisma": "^6.16.2"
 	},
-	"module": "src/index.js"
+	"module": "src/main.js"
 }
