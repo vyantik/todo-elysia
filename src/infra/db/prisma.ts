@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 
 const isProduction = Bun.env.NODE_ENV === 'production'
-console.log(isProduction)
 
 let prisma: PrismaClient
 

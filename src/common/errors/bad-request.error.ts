@@ -1,19 +1,19 @@
 export class BadRequestError extends Error {
-  status = 400
+	status = 400
 
-  constructor(public message: string) {
-    super(message)
-  }
+	constructor(public message: string) {
+		super(message)
+	}
 
-  toResponse() {
-    return Response.json(
-      {
-        error: this.message,
-        code: this.status,
-      },
-      {
-        status: 400,
-      },
-    )
-  }
+	toResponse() {
+		return Response.json(
+			{
+				error: this.message,
+				code: this.status,
+			},
+			{
+				status: 400,
+			},
+		)
+	}
 }

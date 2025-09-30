@@ -3,12 +3,17 @@
 	"version": "1.0.50",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "bun run --watch src/main.ts"
+		"dev": "bun run --watch src/main.ts",
+		"format": "prettier --write \"src/**/*.ts\""
 	},
 	"dependencies": {
+		"@elysiajs/jwt": "^1.4.0",
 		"@elysiajs/openapi": "^1.4.11",
 		"@prisma/client": "^6.16.2",
-		"elysia": "latest"
+		"argon2": "^0.44.0",
+		"elysia": "latest",
+		"pino": "^9.12.0",
+		"pino-pretty": "^13.1.1"
 	},
 	"devDependencies": {
 		"@trivago/prettier-plugin-sort-imports": "^5.2.2",
