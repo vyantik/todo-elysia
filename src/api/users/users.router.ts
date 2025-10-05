@@ -1,6 +1,7 @@
 import Elysia from 'elysia'
 
 import { AuthGuard } from '../../common/guards'
+import { logger } from '../../utils'
 
 export const users = new Elysia({ prefix: 'users' })
 	.use(AuthGuard)
@@ -9,3 +10,5 @@ export const users = new Elysia({ prefix: 'users' })
 			user,
 		}
 	})
+
+logger.debug('UsersRouter Initialized')

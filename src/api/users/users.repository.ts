@@ -1,7 +1,7 @@
-import { User } from '@prisma/client'
-
+import { User } from '../../../generated/prisma'
 import { IRepository } from '../../common'
 import { prismaClient } from '../../infra/db/prisma'
+import { logger } from '../../utils'
 
 interface UserRaw {
 	username: string
@@ -10,6 +10,10 @@ interface UserRaw {
 }
 
 export class UserRepository implements IRepository<User> {
+	public constructor() {
+		logger.debug(`${UserRepository.name} Initialized`)
+	}
+
 	public async findAll(): Promise<User[]> {
 		return await prismaClient.user.findMany()
 	}
@@ -18,6 +22,32 @@ export class UserRepository implements IRepository<User> {
 		return await prismaClient.user.findUnique({
 			where: {
 				id,
+			},
+		})
+	}
+
+	public async findByEmail(email: string): Promise<User | null> {
+		return await prismaClient.user.findUnique({
+			where: {
+				email,
+			},
+		})
+	}
+
+	public async findByIdentity(
+		email: string,
+		username: string,
+	): Promise<User | null> {
+		return await prismaClient.user.findFirst({
+			where: {
+				OR: [
+					{
+						email: email,
+					},
+					{
+						username: username,
+					},
+				],
 			},
 		})
 	}
@@ -32,12 +62,11 @@ export class UserRepository implements IRepository<User> {
 	}
 
 	public async delete(id: string): Promise<boolean> {
-		const user = await prismaClient.user.delete({
+		return !!(await prismaClient.user.delete({
 			where: {
 				id,
 			},
-		})
-		return !!user
+		}))
 	}
 
 	public async create(entity: UserRaw): Promise<User> {

@@ -1,9 +1,14 @@
 import Elysia from 'elysia'
 
-import { jwtPlugin, log } from '../../utils'
+import { jwtPlugin, logger } from '../../utils'
 
 import { AuthService } from './auth.service'
-import { loginRequestSchema, registerRequestSchema } from './dto'
+import {
+	LoginRequestSchema,
+	LoginResponseSchema,
+	RegisterRequestSchema,
+	RegisterResponseSchema,
+} from './dto'
 
 const authService = new AuthService()
 
@@ -16,21 +21,25 @@ export const auth = new Elysia({ prefix: 'auth' })
 			const userId = await authService.login(body)
 			const token = await jwt.sign({ userId })
 
-			return token
+			return {
+				token,
+			}
 		},
 		{
-			body: loginRequestSchema,
+			body: LoginRequestSchema,
+			response: LoginResponseSchema,
 		},
 	)
 	.post(
 		'/register',
 		async ({ body, authService }) => {
 			await authService.register(body)
-			return {
-				message: 'User created successfully',
-			}
+			return { message: 'User created successfully' }
 		},
 		{
-			body: registerRequestSchema,
+			body: RegisterRequestSchema,
+			response: RegisterResponseSchema,
 		},
 	)
+
+logger.debug('AuthRouter Initialized')

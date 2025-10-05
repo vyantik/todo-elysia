@@ -3,17 +3,17 @@ import pino from 'pino'
 const isDevelopment = Bun.env.NODE_ENV === 'development' || !Bun.env.NODE_ENV
 
 export const logger = pino({
-	level: Bun.env.LOG_LEVEL || 'info',
+	level: Bun.env.LOG_LEVEL || 'debug',
 	transport: isDevelopment
 		? {
-				target: 'pino-pretty',
-				options: {
-					colorize: true,
-					translateTime: 'HH:MM:ss',
-					ignore: 'pid,hostname',
-					singleLine: false,
-				},
-			}
+			target: 'pino-pretty',
+			options: {
+				colorize: true,
+				translateTime: 'HH:MM:ss',
+				ignore: 'pid,hostname',
+				singleLine: false,
+			},
+		}
 		: undefined,
 	formatters: {
 		level: label => {

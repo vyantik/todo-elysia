@@ -3,8 +3,9 @@ export interface IEntity {
 }
 
 export interface IRepository<T extends IEntity> {
-	findAll(): Promise<T[]>
+	findAll(id?: string): Promise<T[]>
 	findById(id: string): Promise<T | null>
 	save(entity: T): Promise<T>
 	delete(id: string): Promise<boolean>
+	create(entity: T, ownerId?: string): Promise<T>
 }

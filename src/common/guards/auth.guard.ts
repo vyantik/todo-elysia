@@ -1,5 +1,6 @@
 import { Elysia } from 'elysia'
 
+import { prismaClient } from '../../infra/db/prisma'
 import { jwtPlugin } from '../../utils'
 
 export const AuthGuard = (app: Elysia) =>
@@ -20,10 +21,25 @@ export const AuthGuard = (app: Elysia) =>
 				throw new Error('Invalid or expired token.')
 			}
 
-			return {
-				user: {
+			if (!payload.userId) {
+				set.status = 401
+				throw new Error('invalid token')
+			}
+
+			const user = await prismaClient.user.findUnique({
+				where: {
 					id: payload.userId as string,
-					role: payload.role as string,
 				},
+			})
+
+			if (!user) {
+				set.status = 401
+				throw new Error('invalid token')
+			}
+
+			const { password, ...cleanUser } = user
+
+			return {
+				user: cleanUser,
 			}
 		})

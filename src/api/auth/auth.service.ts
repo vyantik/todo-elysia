@@ -1,7 +1,7 @@
 import { hash, verify } from 'argon2'
 
 import { BadRequestError } from '../../common'
-import { prismaClient } from '../../infra/db/prisma'
+import { logger } from '../../utils'
 import { UserRepository } from '../users'
 
 import { LoginRequest, RegisterRequest } from './dto'
@@ -10,14 +10,11 @@ export class AuthService {
 	private readonly userRepository: UserRepository
 	public constructor() {
 		this.userRepository = new UserRepository()
+		logger.debug(`${AuthService.name} Initialized`)
 	}
 
 	public async login(dto: LoginRequest): Promise<string> {
-		const existingUser = await prismaClient.user.findUnique({
-			where: {
-				email: dto.email,
-			},
-		})
+		const existingUser = await this.userRepository.findByEmail(dto.email)
 
 		if (!existingUser) {
 			throw new BadRequestError('Incorrect login or password')
@@ -35,28 +32,21 @@ export class AuthService {
 		return existingUser.id
 	}
 
-	public async register(dto: RegisterRequest) {
-		const existingUser = await prismaClient.user.findFirst({
-			where: {
-				OR: [
-					{
-						email: dto.email,
-					},
-					{
-						username: dto.username,
-					},
-				],
-			},
-		})
+	public async register({ email, username, password }: RegisterRequest) {
+		const existingUser = await this.userRepository.findByIdentity(
+			email,
+			username,
+		)
 
 		if (existingUser) {
 			throw new BadRequestError('User already exist')
 		}
 
-		const hashedPassword = await hash(dto.password)
+		const hashedPassword = await hash(password)
 
 		const newUser = await this.userRepository.create({
-			...dto,
+			email,
+			username,
 			password: hashedPassword,
 		})
 
